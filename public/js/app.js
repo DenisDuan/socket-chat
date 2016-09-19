@@ -7,6 +7,8 @@
  socket.on('message', function(message) {
      console.group('New message:');
      console.log(message.text);
+
+     $('.messages').append('<p>' + message.text + '</p>');
  })
 
  //Handles submitting new message
@@ -17,6 +19,8 @@
      socket.emit('message', {
          text: inputElemObj.val()
      });
+
+     // Clean up the text field after commit
      inputElemObj.val(''); 
 
  });

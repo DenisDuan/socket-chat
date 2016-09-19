@@ -16,9 +16,10 @@ io.on('connection', (socket) => {
         console.log(`Message received: ${message.text}`);
 
         // "io.emit" will send the message to everybody including the sender
+           io.emit('message', message);
 
         // This will send the message to everyboy excludes the sender
-        socket.broadcast.emit('message', message);
+        // socket.broadcast.emit('message', message);
     });
 
     // Trigger message
