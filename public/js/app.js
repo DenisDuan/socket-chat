@@ -9,6 +9,11 @@
  // Trigger the 'connet' event that informs the server that user connected
  socket.on('connect', function() {
      console.log('Connected to socket.io server!');
+
+     socket.emit('joinRoom', {
+         name: name,
+         room: room
+     });
  });
 
  // Listens to the 'message' event from server 
@@ -21,9 +26,9 @@
      console.group('New message:');
      console.log(message.text);
 
-    // Adds the new incoming message to the page
-     messageElemObj.append('<p><strong>' + message.name + ' ' + 
-        momentTimestamp.local().format('h:mm:ss a') + ': </strong></p>');
+     // Adds the new incoming message to the page
+     messageElemObj.append('<p><strong>' + message.name + ' ' +
+         momentTimestamp.local().format('h:mm:ss a') + ': </strong></p>');
      messageElemObj.append('<p>' + message.text + '</p>');
  })
 
