@@ -9,11 +9,18 @@
  socket.on('activeRoom', function (res) {
      var rooms = res.rooms;
      var roomsElem = $('.rooms');
+     var roomOptionElem = $('.roomOption');
      if (typeof rooms !== 'undefined' && rooms.length > 0) {
-         roomsElem.empty();
+         roomOptionElem.empty();
          rooms.forEach(function (roomName) {
-             // Adds the new incoming message to the page
-             roomsElem.append('<div><strong>' + roomName + ' </strong></div>');
-         })
+             // Adds existing room to the page
+             roomOptionElem.append('<div class="radio"><label><input type="radio" name="optionsRadios" value="'
+                 + roomName + '">' + roomName + '</label></div>');
+         });
+         // Add event handler if radio btn is checked
+         $(":radio").change(function(){
+             $('input[name=room]').val(this.value);
+         });
+         roomsElem.show();
      }
  });
