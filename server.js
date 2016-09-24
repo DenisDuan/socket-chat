@@ -14,11 +14,17 @@ var clientInfo = {};
 
 io.on('connection', (socket) => {
 
-    console.log('User connected via socket.io');
+    // User just connected to the landing page
+    socket.on('welcome', () => {
+        // Tells the user the active room has user joined
+        io.emit('activeRoom', {
+            rooms: getActiveRooms(clientInfo)
+        });
+    });
 
     // Action when user disconnect/left a chat room
     socket.on('disconnect', () => {
-        let userData = clientInfo[socket.id]; 
+        let userData = clientInfo[socket.id];
         if (typeof userData !== 'undefined') {
             socket.leave(userData.room);
             io.to(userData.room).emit('message', {
@@ -63,6 +69,21 @@ io.on('connection', (socket) => {
         timestamp: moment().valueOf()
     });
 });
+
+/**
+ * The function returns the room that has been created (has user joined) 
+ */
+function getActiveRooms(clientArray) {
+    let localArray = clientArray;
+    let roomSet = new Set();
+    Object.keys(localArray).forEach((socketId) => {
+        var room = localArray[socketId].room;
+        if (room) {
+            roomSet.add(room);
+        }
+    });
+    return Array.from(roomSet);
+}
 
 // Server listens to a port
 http.listen(PORT, () => {
