@@ -16,13 +16,28 @@ io.on('connection', (socket) => {
 
     console.log('User connected via socket.io');
 
-    // Listen to the event that a new user join a chat room, "req" object is in the format of {name, room}
-    socket.on('joinRoom', function(req) {
+    // Action when user disconnect/left a chat room
+    socket.on('disconnect', () => {
+        let userData = clientInfo[socket.id]; 
+        if (typeof userData !== 'undefined') {
+            socket.leave(userData.room);
+            io.to(userData.room).emit('message', {
+                name: 'System',
+                text: `${userData.name} has left.`,
+                timestamp: moment().valueOf()
+            });
+            delete clientInfo[socket.id];
+        }
+    });
+
+    // Listen to the event that a new user join a chat room, "req" object is 
+    // in the format of {name, room}
+    socket.on('joinRoom', (req) => {
         clientInfo[socket.id] = req;
         socket.join(req.room);
         socket.broadcast.to(req.room).emit('message', {
             name: 'System',
-            text: req.name + ' has joined!',
+            text: `${req.name} has joined!`,
             timestamp: moment().valueOf()
         });
     });
@@ -48,8 +63,6 @@ io.on('connection', (socket) => {
         timestamp: moment().valueOf()
     });
 });
-
-
 
 // Server listens to a port
 http.listen(PORT, () => {
