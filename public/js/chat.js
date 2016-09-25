@@ -16,18 +16,22 @@
 
  // Listens to the 'message' event from server 
  socket.on('message', function (message) {
-
      // Get the timestamp in utc
      var momentTimestamp = moment.utc(message.timestamp);
-     var messageElemObj = $('.messages');
+     var messagesElem = $('.messages');
+     var messageElem = $('<li class="list-group-item"></li>')
 
      console.group('New message:');
      console.log(message.text);
 
      // Adds the new incoming message to the page
-     messageElemObj.append('<p><strong>' + message.name + ' ' +
+     messageElem.append('<p><strong>' + message.name + ' ' +
          momentTimestamp.local().format('h:mm:ss a') + ': </strong></p>');
-     messageElemObj.append('<p>' + message.text + '</p>');
+     messageElem.append('<p>' + message.text + '</p>');
+     messagesElem.append(messageElem);
+
+     var wtf = $('.pre-scrollable');
+     wtf.scrollTop(wtf[0].scrollHeight);
  })
 
  //Handles submitting new message
